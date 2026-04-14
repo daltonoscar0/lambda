@@ -1,0 +1,103 @@
+# Benchmark sentences for the CCG lambda. parser
+# Lines starting with '#' or blank lines are ignored.
+# Each sentence must parse to at least one S or Q result.
+
+# --- Basic quantifiers ---
+Every student likes a cat
+Some person sees every dog
+No cat likes a dog
+A student likes every cat
+Every dog runs
+Some cat sleeps
+
+# --- Proper names ---
+john likes a cat
+mary sees every student
+alice runs
+bob loves mary
+
+# --- The (iota) ---
+The student runs
+The cat sees the dog
+Every student loves the professor
+The professor likes the student
+
+# --- Adjectives ---
+Every happy student runs
+Some tall professor teaches a small class
+The brave soldier fights
+A young dog sleeps
+Every old cat runs
+
+# --- Modals ---
+Every student can run
+Some cat must sleep
+The professor should teach a student
+A dog will run
+Mary can see john
+Every student must like a cat
+
+# --- Negation ---
+john not run
+john doesn't run
+The student doesn't like a cat
+Mary cannot see every dog
+
+# --- Do-support negation ---
+john does not run
+The student does not like a cat
+
+# --- Past tense ---
+john liked a cat
+Every student saw a dog
+The professor taught a student
+Mary loved john
+A dog ran
+Every cat slept
+
+# --- Copula ---
+john is a student
+Mary is happy
+The professor is tall
+Every student is brave
+Some cat is a dog
+
+# --- Coordination ---
+john and mary run
+Every student and professor sleeps
+A cat or dog runs
+john likes mary and alice
+Every student studies and sleeps
+
+# --- Relative clauses (subject) ---
+Every student that runs sleeps
+The professor who teaches a student runs
+Every dog that john sees runs
+Every student that likes a cat sleeps
+
+# --- Relative clauses (object) ---
+A cat that a student likes runs
+The professor that mary sees teaches a student
+Every book that john reads is good
+
+# --- Wh-questions ---
+who runs
+who likes a cat
+what runs
+
+# --- Ditransitive ---
+john gives mary a book
+Every professor gives a student a paper
+Mary gives john a cat
+
+# --- PP / prepositional ---
+Every student runs quickly
+john sleeps soundly
+Mary studies carefully
+
+# --- Complex sentences ---
+Every student that likes a cat sees a dog
+Some professor who runs teaches every happy student
+The cat that john likes sees the dog that mary loves
+Every student can see a professor who teaches a student
+john and mary like every cat that runs
