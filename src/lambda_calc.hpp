@@ -35,7 +35,7 @@ Term                beta_reduce(const Term& t, int max_steps = 500);
 std::vector<Term>   beta_reduce_trace(const Term& t, int max_steps = 500);
 
 // ---------------------------------------------------------------------------
-// Canonical string — used for structural deduplication (bound vars renamed
+// Canonical string, used for structural deduplication (bound vars renamed
 // depth-first to positional names _0, _1, ...)
 // ---------------------------------------------------------------------------
 std::string canonical_str(const Term& t);

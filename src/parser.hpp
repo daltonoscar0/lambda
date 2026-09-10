@@ -37,12 +37,12 @@ struct ParseError : std::runtime_error {
 };
 
 // ---------------------------------------------------------------------------
-// Parse — returns all S/Q-spanning results, deduplicated by structure
+// Parse, returns all S/Q-spanning results, deduplicated by structure
 // ---------------------------------------------------------------------------
 std::vector<ParseResult> parse(const std::string& sentence);
 
 // ---------------------------------------------------------------------------
-// Parse with step tracing — returns raw term + reduction steps per parse
+// Parse with step tracing, returns raw term + reduction steps per parse
 // ---------------------------------------------------------------------------
 struct StepResult { Term raw; std::vector<Term> steps; };
 std::vector<StepResult> parse_steps(const std::string& sentence);

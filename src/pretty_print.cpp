@@ -102,7 +102,7 @@ static bool is_atom_term(const Term& t) {
            std::holds_alternative<Const>(t->data);
 }
 
-// Uncurry: App(App(f, a), b) → (f, [a, b])
+// Uncurry: App(App(f, a), b) -> (f, [a, b])
 static std::pair<Term, std::vector<Term>> uncurry(const Term& t) {
     std::vector<Term> args;
     Term cur = t;
@@ -114,7 +114,7 @@ static std::pair<Term, std::vector<Term>> uncurry(const Term& t) {
     return { cur, args };
 }
 
-// Strip nested Lam: λx. λy. body → ("x y", body)
+// Strip nested Lam: λx. λy. body -> ("x y", body)
 static std::pair<std::string, Term> strip_lam(const Term& t) {
     std::string vars;
     Term cur = t;

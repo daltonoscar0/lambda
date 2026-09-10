@@ -32,7 +32,7 @@ static Term t_noun(const std::string& pred) {
     return make_lam("x", make_app(make_const(pred), make_var("x")));
 }
 
-// NP/N (every / each / all / any / both / most): λP. λQ. ∀x. P(x) → Q(x)
+// NP/N (every / each / all / any / both / most): λP. λQ. ∀x. P(x) -> Q(x)
 static Term t_det_every() {
     return make_lam("P", make_lam("Q",
                make_forall("x",
@@ -172,12 +172,12 @@ static Term t_cop_eq() {
         make_app(make_var("S"), make_lam("x", app_O))));
 }
 
-// (S\NP)/(S\NP): identity — copula for predicative adjectives "John is brave"
+// (S\NP)/(S\NP): identity, copula for predicative adjectives "John is brave"
 static Term t_cop_id() {
     return make_lam("V", make_lam("S", make_app(make_var("V"), make_var("S"))));
 }
 
-// Coordination — AND
+// Coordination, AND
 // (NP\NP)/NP: λB. λA. λP. A(P) ∧ B(P)
 static Term t_conj_and_gq() {
     auto AP = make_app(make_var("A"), make_var("P"));
@@ -201,7 +201,7 @@ static Term t_conj_and_s() {
     return make_lam("B", make_lam("A", make_and(make_var("A"), make_var("B"))));
 }
 
-// Coordination — OR
+// Coordination, OR
 static Term t_conj_or_gq() {
     auto AP = make_app(make_var("A"), make_var("P"));
     auto BP = make_app(make_var("B"), make_var("P"));
@@ -301,7 +301,7 @@ static Table build_table() {
     Table t;
 
     // -----------------------------------------------------------------------
-    // Nouns — social roles & professions
+    // Nouns, social roles & professions
     // -----------------------------------------------------------------------
     add_noun(t, "student",       "students",       "student");
     add_noun(t, "teacher",       "teachers",       "teacher");
@@ -384,7 +384,7 @@ static Table build_table() {
     add_noun(t, "citizen",       "citizens",       "citizen");
 
     // -----------------------------------------------------------------------
-    // Nouns — animals
+    // Nouns, animals
     // -----------------------------------------------------------------------
     add_noun(t, "cat",      "cats",      "cat");
     add_noun(t, "dog",      "dogs",      "dog");
@@ -422,7 +422,7 @@ static Table build_table() {
     add_noun(t, "dragon",   "dragons",   "dragon");
 
     // -----------------------------------------------------------------------
-    // Nouns — objects & places
+    // Nouns, objects & places
     // -----------------------------------------------------------------------
     add_noun(t, "book",       "books",       "book");
     add_noun(t, "table",      "tables",      "table");
@@ -508,7 +508,7 @@ static Table build_table() {
     add_noun(t, "street",     "streets",     "street");
 
     // -----------------------------------------------------------------------
-    // Nouns — abstract concepts
+    // Nouns, abstract concepts
     // -----------------------------------------------------------------------
     add_noun(t, "idea",       "ideas",       "idea");
     add_noun(t, "thought",    "thoughts",    "thought");
@@ -576,7 +576,7 @@ static Table build_table() {
     add_noun(t, "beginning",  "beginnings",  "beginning");
 
     // -----------------------------------------------------------------------
-    // Nouns — natural / body
+    // Nouns, natural / body
     // -----------------------------------------------------------------------
     add_noun(t, "fire",    "fires",    "fire");
     add_noun(t, "wind",    "winds",    "wind");
@@ -608,7 +608,7 @@ static Table build_table() {
     add_noun(t, "bone",    "bones",    "bone");
 
     // -----------------------------------------------------------------------
-    // Nouns — food & drink
+    // Nouns, food & drink
     // -----------------------------------------------------------------------
     add_noun(t, "apple",  "apples",  "apple");
     add_noun(t, "bread",  "breads",  "bread");
@@ -826,7 +826,7 @@ static Table build_table() {
     // (the add_tv in TV section would overwrite, so we do it last)
 
 
-    // Past tense — intransitive
+    // Past tense, intransitive
     add_iv_past(t, "ran",        "run");
     add_iv_past(t, "fell",       "fall");
     add_iv_past(t, "rose",       "rise");
@@ -1019,7 +1019,7 @@ static Table build_table() {
     add_tv(t, "watches",    "watch",     "watch");
     add_tv(t, "learns",     "learn",     "learn");
 
-    // Past tense — transitive (irregular)
+    // Past tense, transitive (irregular)
     add_tv_past(t, "liked",      "like");
     add_tv_past(t, "saw",        "see");
     add_tv_past(t, "loved",      "love");
@@ -1080,7 +1080,7 @@ static Table build_table() {
     add_dtv(t, "promises", "promise", "promise");
     add_dtv(t, "denies",   "deny",    "deny");
 
-    // Past tense — ditransitive
+    // Past tense, ditransitive
     add_dtv_past(t, "gave",     "give");
     add_dtv_past(t, "showed",   "show");
     add_dtv_past(t, "lent",     "lend");
@@ -1147,7 +1147,7 @@ static Table build_table() {
     }
 
     // -----------------------------------------------------------------------
-    // Prepositions — VP adjunct + N post-modifier
+    // Prepositions, VP adjunct + N post-modifier
     // -----------------------------------------------------------------------
     for (auto& [w, pred] : std::initializer_list<std::pair<const char*,const char*>>{
         {"in",         "in"},   {"on",        "on"},   {"at",        "at"},
@@ -1217,13 +1217,13 @@ static std::vector<LexEntry> morph_fallback(const std::string& key) {
 
     // -ed past tense / past participle
     if (key.size() > 3 && key.substr(key.size()-2) == "ed") {
-        // loved → love, chased → chase
+        // loved -> love, chased -> chase
         auto s1 = try_stem(key.substr(0, key.size()-1));
         if (!s1.empty()) return s1;
-        // walked → walk, talked → talk
+        // walked -> walk, talked -> talk
         auto s2 = try_stem(key.substr(0, key.size()-2));
         if (!s2.empty()) return s2;
-        // tried → try (ied → y)
+        // tried -> try (ied -> y)
         if (key.size() > 4 && key.substr(key.size()-3) == "ied") {
             auto s3 = try_stem(key.substr(0, key.size()-3) + "y");
             if (!s3.empty()) return s3;
@@ -1231,16 +1231,16 @@ static std::vector<LexEntry> morph_fallback(const std::string& key) {
     }
     // -ing
     if (key.size() > 4 && key.substr(key.size()-3) == "ing") {
-        // running → run (consonant doubling already stripped by removing 1 char)
+        // running -> run (consonant doubling already stripped by removing 1 char)
         auto s1 = try_stem(key.substr(0, key.size()-3));
         if (!s1.empty()) return s1;
-        // liking → like (silent e dropped)
+        // liking -> like (silent e dropped)
         auto s2 = try_stem(key.substr(0, key.size()-3) + "e");
         if (!s2.empty()) return s2;
     }
     // -s/-es plurals / 3sg
     if (key.size() > 3 && key.substr(key.size()-2) == "es") {
-        // boxes → box, chases → chase
+        // boxes -> box, chases -> chase
         auto s1 = try_stem(key.substr(0, key.size()-2));
         if (!s1.empty()) return s1;
         auto s2 = try_stem(key.substr(0, key.size()-1));
@@ -1250,7 +1250,7 @@ static std::vector<LexEntry> morph_fallback(const std::string& key) {
         auto s1 = try_stem(key.substr(0, key.size()-1));
         if (!s1.empty()) return s1;
     }
-    // -ies → -y (flies → fly)
+    // -ies -> -y (flies -> fly)
     if (key.size() > 3 && key.substr(key.size()-3) == "ies") {
         auto s1 = try_stem(key.substr(0, key.size()-3) + "y");
         if (!s1.empty()) return s1;

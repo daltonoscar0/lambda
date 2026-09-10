@@ -41,7 +41,7 @@ extern const Category CAT_PP;
 extern const Category CAT_CONJ;
 extern const Category CAT_Q;    // question sentence
 
-// Derived common categories — built on first use
+// Derived common categories, built on first use
 Category cat_SbNP_fNP();  // (S\NP)/NP  transitive verb
 Category cat_SbNP();      // S\NP       intransitive verb / VP
 Category cat_NPfN();      // NP/N       determiner
