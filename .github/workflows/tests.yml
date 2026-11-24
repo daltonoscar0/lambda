@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compiler version
+        run: c++ --version
+
+      # Scalpel is vendored under vendor/scalpel, so this needs no second
+      # checkout and no dependencies.
+      - name: Build
+        run: make
+
+      - name: Run tests
+        run: make test
