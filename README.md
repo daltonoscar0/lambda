@@ -1,5 +1,7 @@
 # lambda.
 
+[![tests](https://github.com/daltonoscar0/lambda/actions/workflows/tests.yml/badge.svg)](https://github.com/daltonoscar0/lambda/actions/workflows/tests.yml)
+
 A from-scratch semantic parser for natural language. It takes an English sentence, builds a Combinatory Categorial Grammar (CCG) derivation, and outputs a first-order logic formula using standard quantifier notation (∀, ∃, ∧, ->, ¬).
 
 ## What is CCG?
@@ -12,36 +14,46 @@ Each lexical entry also carries a **lambda expression** that captures its meanin
 
 | Input | Logical form |
 |-------|-------------|
-| Every student likes a cat | `∀x. student(x) → ∃y. cat(y) ∧ likes(x, y)` |
-| Some person sees every dog | `∃x. person(x) ∧ ∀y. dog(y) → sees(x, y)` |
-| No cat likes a dog | `¬∃x. cat(x) ∧ ∃y. dog(y) ∧ likes(x, y)` |
-| A student likes every cat | `∃x. student(x) ∧ ∀y. cat(y) → likes(x, y)` |
-| Every dog runs | `∀x. dog(x) → runs(x)` |
+| Every student likes a cat | `∀x. (student(x) → ∃y. (cat(y) ∧ ∃z. (like(z) ∧ agent(z, x) ∧ patient(z, y))))` |
+| Some person sees every dog | `∃x. (person(x) ∧ ∀y. (dog(y) → ∃z. (see(z) ∧ agent(z, x) ∧ patient(z, y))))` |
+| No cat likes a dog | `¬∃x. (cat(x) ∧ ∃y. (dog(y) ∧ ∃z. (like(z) ∧ agent(z, x) ∧ patient(z, y))))` |
+| A student likes every cat | `∃x. (student(x) ∧ ∀y. (cat(y) → ∃z. (like(z) ∧ agent(z, x) ∧ patient(z, y))))` |
+| Every dog runs | `∀x. (dog(x) → ∃y. (run(y) ∧ agent(y, x)))` |
+
+Verbs get a **neo-Davidsonian** treatment: rather than a binary `likes(x, y)`,
+a verb introduces an event variable with `agent` and `patient` roles. That is
+why quantifier scope is visible in these forms but the predicate is decomposed.
 
 *(Variable names are auto-generated and may differ; the logical structure is identical.)*
 
 ## Install & run
 
-No external NLP libraries are required, only Python 3.11+.
+No external libraries are required, only a C++17 compiler. The Scalpel
+tokenizer is vendored under `vendor/scalpel/`.
 
 ```bash
-# Clone / copy the project, then:
-cd "lambda."
+# Build
+make
 
 # Parse a single sentence
-python main.py "Every student likes a cat"
+./build/lambda "Every student likes a cat"
 
 # Interactive REPL
-python main.py --interactive
+./build/lambda --interactive        # or -i
 
 # Show beta-reduction steps
-python main.py --show-steps "Some person sees every dog"
+./build/lambda --show-steps "Some person sees every dog"
+
+# Other flags
+./build/lambda --show-tree  "..."   # CCG derivation tree
+./build/lambda --json       "..."   # JSON output
+./build/lambda --all-parses "..."   # every parse, not just the first
 
 # Batch mode (one sentence per line)
-cat examples/sentences.txt | python main.py
+cat examples/sentences.txt | ./build/lambda
 
-# Run tests
-python -m pytest tests/ -v
+# Build and run the tests
+make test
 ```
 
 ## How *every* becomes ∀
@@ -63,38 +75,53 @@ For "Every student":
 
 This NP then acts as the subject. The VP "likes a cat" is built to accept such a generalized quantifier and produce the final sentence:
 ```
-(λQ. ∀x. student(x) → Q(x)) (λx. ∃y. cat(y) ∧ likes(x, y))
-  → ∀x. student(x) → ∃y. cat(y) ∧ likes(x, y)
+(λQ. ∀x. student(x) → Q(x)) (λx. ∃y. cat(y) ∧ ∃z. like(z) ∧ agent(z, x) ∧ patient(z, y))
+  → ∀x. (student(x) → ∃y. (cat(y) ∧ ∃z. (like(z) ∧ agent(z, x) ∧ patient(z, y))))
 ```
+
+The quantifier machinery is unchanged by the event decomposition: `every` is
+still `λP. λQ. ∀x. P(x) → Q(x)`, and only the verb's contribution to `Q` differs.
 
 ## Extending the lexicon
 
-Open `src/lexicon.py` and add entries using the helper functions:
+Open `src/lexicon.cpp` and add entries using the helper functions:
 
-```python
-# New noun
-"fox": [(N, _noun("fox"))],
+```cpp
+// New noun: singular, plural, predicate
+add_noun(t, "fox", "foxes", "fox");
 
-# New transitive verb
-"admires": [(_SbNP_fNP, _trans("admires"))],
+// New transitive verb: 3sg, base, predicate
+add_tv(t, "admires", "admire", "admire");
 
-# New intransitive verb
-"flies": [(_SbNP, _intrans("flies"))],
+// New intransitive verb
+add_iv(t, "flies", "fly", "fly");
 
-# New proper name
-"eve": [(NP, _proper("eve"))],
+// Past-tense forms have their own helpers
+add_tv_past(t, "admired", "admire");
+add_iv_past(t, "flew", "fly");
 ```
+
+These register both inflected forms in the table, so `add_noun` above makes
+*fox* and *foxes* both available as `N`.
 
 Unknown words are automatically treated as nouns, so *"Every wumpus chases a troll"* parses out of the box.
 
 ## Architecture
 
 ```
-src/lambda_calc.py   Term AST (Var, Const, App, Lam, Forall, Exists, And, Implies, Not)
-                     + beta_reduce, substitute, free_vars
-src/ccg_types.py     Category classes + forward/backward application & composition rules
-src/lexicon.py       Lexicon table + lookup()
-src/parser.py        CYK chart parser — fills chart[i][j] bottom-up
-src/pretty_print.py  Converts Terms to ∀∃λ unicode strings
-main.py              CLI entry point (argparse + REPL)
+src/term.hpp          Term AST (Var, Const, App, Lam, Forall, Exists, And, Implies, Not)
+src/lambda_calc.cpp   beta_reduce, substitute, free_vars
+src/category.cpp      Category type + parsing/printing of CCG categories
+src/ccg_rules.cpp     Forward/backward application and composition rules
+src/lexicon.cpp       Lexicon table + lookup()
+src/tokenizer.cpp     Bridge onto the vendored Scalpel tokenizer
+src/parser.cpp        CYK chart parser — fills chart[i][j] bottom-up
+src/pretty_print.cpp  Converts Terms to ∀∃λ unicode strings
+main.cpp              CLI entry point (flag parsing + REPL)
+vendor/scalpel/       Vendored Scalpel tokenizer sources
+tests/test_main.cpp   Test runner; suites in tests/*.hpp
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).

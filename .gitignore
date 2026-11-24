@@ -6,3 +6,20 @@ AGENTS.md
 .mcp.json
 tasks/lessons.md
 tasks/todo.md
+
+# Build output
+build/
+*.o
+*.d
+*.obj
+
+# Compiled binaries
+vendor/scalpel/tokenize_words
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# macOS
+.DS_Store
