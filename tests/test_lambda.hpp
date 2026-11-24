@@ -9,14 +9,14 @@ inline void test_lambda(TestRunner& R) {
     // ------------------------------------------------------------------
     CHECK(R, free_vars(make_var("x")) == std::set<std::string>{"x"});
     CHECK(R, free_vars(make_const("john")).empty());
-    // λx. x  — x is bound
+    // λx. x, x is bound
     CHECK(R, free_vars(make_lam("x", make_var("x"))).empty());
-    // λx. y  — y is free
+    // λx. y, y is free
     CHECK(R, free_vars(make_lam("x", make_var("y"))) == std::set<std::string>{"y"});
-    // f(x) — both free
+    // f(x), both free
     { auto fv = free_vars(make_app(make_var("f"), make_var("x")));
       CHECK(R, fv.count("f") && fv.count("x")); }
-    // ∀x. P(x)  — P is free, x is bound
+    // ∀x. P(x), P is free, x is bound
     { auto fv = free_vars(make_forall("x", make_app(make_var("P"), make_var("x"))));
       CHECK(R, fv.count("P") && !fv.count("x")); }
 
@@ -43,16 +43,16 @@ inline void test_lambda(TestRunner& R) {
     // ------------------------------------------------------------------
     R.suite("beta_reduce");
     // ------------------------------------------------------------------
-    // (λx. x)(z) → z
+    // (λx. x)(z) -> z
     { auto t = make_app(make_lam("x", make_var("x")), make_var("z"));
       CHECK(R, term_equal(beta_reduce(t), make_var("z"))); }
-    // (λx. likes(john,x))(mary) → likes(john,mary)
+    // (λx. likes(john,x))(mary) -> likes(john,mary)
     { auto t = make_app(
           make_lam("x", make_app(make_app(make_const("likes"), make_const("john")), make_var("x"))),
           make_const("mary"));
       auto expected = make_app(make_app(make_const("likes"), make_const("john")), make_const("mary"));
       CHECK(R, term_equal(beta_reduce(t), expected)); }
-    // Curried: (λx.λy.likes(x,y))(john)(mary) → likes(john,mary)
+    // Curried: (λx.λy.likes(x,y))(john)(mary) -> likes(john,mary)
     { auto t = make_app(
           make_app(
               make_lam("x", make_lam("y",
@@ -64,7 +64,7 @@ inline void test_lambda(TestRunner& R) {
     // Already normal form
     { auto t = make_app(make_const("f"), make_const("a"));
       CHECK(R, term_equal(beta_reduce(t), t)); }
-    // Under lambda: λy. (λx.x)(y) → λy. y
+    // Under lambda: λy. (λx.x)(y) -> λy. y
     { auto t = make_lam("y", make_app(make_lam("x", make_var("x")), make_var("y")));
       CHECK(R, term_equal(beta_reduce(t), make_lam("y", make_var("y")))); }
 

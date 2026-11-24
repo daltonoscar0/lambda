@@ -4,7 +4,7 @@
 #include <variant>
 
 // ---------------------------------------------------------------------------
-// Forward declaration — allows Term to be used inside node structs
+// Forward declaration, allows Term to be used inside node structs
 // ---------------------------------------------------------------------------
 struct TermNode;
 using Term = std::shared_ptr<TermNode>;
@@ -22,7 +22,7 @@ struct And     { Term left; Term right; };
 struct Or      { Term left; Term right; };
 struct Implies { Term left; Term right; };
 struct Not     { Term body; };
-struct Iota    { std::string var; Term body; };  // ιx. P(x) — definite description
+struct Iota    { std::string var; Term body; };  // ιx. P(x), definite description
 
 using TermVariant = std::variant<Var, Const, App, Lam, Forall, Exists,
                                   And, Or, Implies, Not, Iota>;

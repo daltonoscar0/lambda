@@ -52,7 +52,7 @@ dedup_by_structure(const std::vector<ParseResult>& entries) {
 }
 
 // ---------------------------------------------------------------------------
-// Apply type-raising to a list of entries (only NP → lifted NP)
+// Apply type-raising to a list of entries (only NP -> lifted NP)
 // ---------------------------------------------------------------------------
 static std::vector<ParseResult>
 apply_type_raising(const std::vector<ParseResult>& entries) {

@@ -13,7 +13,7 @@ static Term maybe_reduce(Term t) {
 }
 
 // ---------------------------------------------------------------------------
-// Forward Application: (A/B) B → A     sem: f(x)
+// Forward Application: (A/B) B -> A     sem: f(x)
 // ---------------------------------------------------------------------------
 OptResult forward_apply(const Category& lc, const Term& ls,
                         const Category& rc, const Term& rs)
@@ -24,7 +24,7 @@ OptResult forward_apply(const Category& lc, const Term& ls,
 }
 
 // ---------------------------------------------------------------------------
-// Backward Application: B (A\B) → A    sem: f(x)
+// Backward Application: B (A\B) -> A    sem: f(x)
 // ---------------------------------------------------------------------------
 OptResult backward_apply(const Category& lc, const Term& ls,
                          const Category& rc, const Term& rs)
@@ -35,7 +35,7 @@ OptResult backward_apply(const Category& lc, const Term& ls,
 }
 
 // ---------------------------------------------------------------------------
-// Forward Composition: (A/B)(B/C) → A/C    sem: λx. f(g(x))
+// Forward Composition: (A/B)(B/C) -> A/C    sem: λx. f(g(x))
 // ---------------------------------------------------------------------------
 OptResult forward_compose(const Category& lc, const Term& ls,
                           const Category& rc, const Term& rs)
@@ -49,7 +49,7 @@ OptResult forward_compose(const Category& lc, const Term& ls,
 }
 
 // ---------------------------------------------------------------------------
-// Backward Composition: (B\C)(A\B) → A\C    sem: λx. g(f(x))
+// Backward Composition: (B\C)(A\B) -> A\C    sem: λx. g(f(x))
 // ---------------------------------------------------------------------------
 OptResult backward_compose(const Category& lc, const Term& ls,
                            const Category& rc, const Term& rs)

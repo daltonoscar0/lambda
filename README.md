@@ -1,10 +1,10 @@
 # lambda.
 
-A from-scratch semantic parser for natural language. It takes an English sentence, builds a Combinatory Categorial Grammar (CCG) derivation, and outputs a first-order logic formula using standard quantifier notation (∀, ∃, ∧, →, ¬).
+A from-scratch semantic parser for natural language. It takes an English sentence, builds a Combinatory Categorial Grammar (CCG) derivation, and outputs a first-order logic formula using standard quantifier notation (∀, ∃, ∧, ->, ¬).
 
 ## What is CCG?
 
-Combinatory Categorial Grammar is a grammar formalism where every word is assigned a syntactic **category** that encodes what it needs from its neighbours to form a larger constituent. A transitive verb like *likes* carries the category `(S\NP)/NP`, meaning: "give me an NP to my right (the object), then an NP to my left (the subject), and I'll produce a sentence S." Categories combine via a small set of rules—forward/backward application and composition—without any separate phrase-structure rules. The grammar is entirely lexical.
+Combinatory Categorial Grammar is a grammar formalism where every word is assigned a syntactic **category** that encodes what it needs from its neighbours to form a larger constituent. A transitive verb like *likes* carries the category `(S\NP)/NP`, meaning: "give me an NP to my right (the object), then an NP to my left (the subject), and I'll produce a sentence S." Categories combine via a small set of rules, forward/backward application and composition, without any separate phrase-structure rules. The grammar is entirely lexical.
 
 Each lexical entry also carries a **lambda expression** that captures its meaning. When two categories combine, their lambda expressions compose via beta-reduction. Chaining these reductions bottom-up over the parse chart produces the logical form for the whole sentence.
 
@@ -22,7 +22,7 @@ Each lexical entry also carries a **lambda expression** that captures its meanin
 
 ## Install & run
 
-No external NLP libraries are required — only Python 3.11+.
+No external NLP libraries are required, only Python 3.11+.
 
 ```bash
 # Clone / copy the project, then:

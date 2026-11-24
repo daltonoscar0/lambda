@@ -20,7 +20,7 @@ inline void test_parser(TestRunner& R) {
         auto pp = pretty(results[0].sem);
         CHECK(R, contains(pp, "\u2200"));   // ∀
         CHECK(R, contains(pp, "student"));
-        CHECK(R, contains(pp, "\u2192"));   // →
+        CHECK(R, contains(pp, "\u2192"));   // ->
         CHECK(R, contains(pp, "\u2203"));   // ∃
         CHECK(R, contains(pp, "cat"));
         CHECK(R, contains(pp, "\u2227"));   // ∧
